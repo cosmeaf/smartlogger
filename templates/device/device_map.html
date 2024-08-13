@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block title %}Device Map{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+  <h1>Device {{ device.device_id }} Position</h1>
+
+  <!-- Debugging Output -->
+  <p>Latitude: {{ device.latitude }}</p>
+  <p>Longitude: {{ device.longitude }}</p>
+
+  <!-- Map Container -->
+  <div id="map" style="height: 500px;"></div>
+  <a href="{% url 'device_list' %}" class="btn btn-secondary mt-3"><i class="fas fa-arrow-left"></i> Back to List</a>
+</div>
+
+<!-- Leaflet CSS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+
+<!-- Leaflet JavaScript -->
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    var devicePosition = [{{ device.latitude }}, {{ device.longitude }}];
+
+  // Initialize the map
+  var map = L.map('map').setView(devicePosition, 15);
+
+  // Add OpenStreetMap tiles
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+  }).addTo(map);
+
+  // Add a marker for the device position
+  L.marker(devicePosition).addTo(map)
+    .bindPopup('<b>Device Position</b><br />{{ device.latitude }}, {{ device.longitude }}')
+    .openPopup();
+  });
+</script>
+{% endblock %}

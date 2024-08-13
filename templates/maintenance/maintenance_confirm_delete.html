@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block title %}Delete Maintenance{% endblock %}
+
+{% block content %}
+<div class="container">
+  <h1>Are you sure you want to delete this maintenance record?</h1>
+  <form method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">Yes, delete</button>
+    <a href="{% url 'maintenance_list' maintenance.equipament.pk %}" class="btn btn-secondary">Cancel</a>
+  </form>
+</div>
+{% endblock %}

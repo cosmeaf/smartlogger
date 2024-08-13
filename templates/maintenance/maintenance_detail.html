@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block title %}Maintenance Details{% endblock %}
+
+{% block content %}
+<div class="container">
+  <h1>Maintenance Details</h1>
+  <dl class="row">
+    <dt class="col-sm-3">Name</dt>
+    <dd class="col-sm-9">{{ maintenance.name }}</dd>
+
+    <dt class="col-sm-3">Usage Hours</dt>
+    <dd class="col-sm-9">{{ maintenance.usage_hours }}</dd>
+
+    <dt class="col-sm-3">Alarm Hours</dt>
+    <dd class="col-sm-9">{{ maintenance.alarm_hours }}</dd>
+
+    <dt class="col-sm-3">Remaining Hours</dt>
+    <dd class="col-sm-9">{{ maintenance.remaining_hours }}</dd>
+
+    <dt class="col-sm-3">Order Service (OS)</dt>
+    <dd class="col-sm-9">{{ maintenance.os }}</dd>
+
+    <dt class="col-sm-3">Observations</dt>
+    <dd class="col-sm-9">{{ maintenance.obs }}</dd>
+  </dl>
+  <a href="{% url 'maintenance_list' maintenance.equipament.pk %}" class="btn btn-secondary">Back to List</a>
+</div>
+{% endblock %}

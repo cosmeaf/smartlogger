@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block title %}Device Detail{% endblock %}
+{% block content %}
+<h1>Device Detail</h1>
+<p><strong>Device ID:</strong> {{ device.device_id }}</p>
+<p><strong>Hourmeter:</strong> {{ device.hourmeter }}</p>
+<p><strong>Latitude:</strong> {{ device.latitude }}</p>
+<p><strong>Longitude:</strong> {{ device.longitude }}</p>
+<p><strong>Temperature:</strong> {{ device.temperature }}</p>
+<p><strong>Speed:</strong> {{ device.speed }}</p>
+
+<a href="{% url 'update_device' device.id %}" class="btn btn-warning"><i class="fas fa-edit"></i> Edit</a>
+<a href="{% url 'device_list' %}" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Back to List</a>
+{% endblock %}

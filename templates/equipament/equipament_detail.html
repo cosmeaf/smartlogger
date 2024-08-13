@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block title %}Equipament Detail{% endblock %}
+
+{% block content %}
+<h1>{{ equipament.name }}</h1>
+<p><strong>Device:</strong> {{ equipament.device }}</p>
+<p><strong>Hourmeter:</strong> {{ equipament.device.hourmeter|floatformat:2 }}</p>
+<p><strong>Worked Hours:</strong> {{ equipament.worked_hours|floatformat:2 }}</p>
+<a href="{% url 'equipament_update' equipament.pk %}" class="btn btn-warning">Edit</a>
+<a href="{% url 'equipament_list' %}" class="btn btn-secondary">Back to List</a>
+{% endblock %}

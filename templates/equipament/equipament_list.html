@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block title %}Equipment List{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h1>Equipment List</h1>
+    <div>
+      <a href="{% url 'equipament_create' %}" class="btn btn-primary"><i class="fas fa-plus"></i> Add New Equipment</a>
+    </div>
+  </div>
+
+  <table class="table table-sm table-striped text-center" width="100%">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Device</th>
+        <th>Hourmeter</th>
+        <th>Worked Hours</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody id="equipament-data">
+      {% for equipament in equipaments %}
+      <tr>
+        <td>{{ equipament.name }}</td>
+        <td>{{ equipament.device.device_id }}</td>
+        <td>{{ equipament.device.hourmeter|floatformat:2 }}</td> <!-- Display Device Hourmeter -->
+        <td>{{ equipament.worked_hours|floatformat:2 }}</td> <!-- Display Worked Hours -->
+        <td>
+          <a href="{% url 'equipament_detail' equipament.pk %}" class="btn btn-sm btn-info">View</a>
+          <a href="{% url 'equipament_update' equipament.pk %}" class="btn btn-sm btn-warning">Edit</a>
+          <a href="{% url 'maintenance' equipament.pk %}" class="btn btn-sm btn-secondary">Maintenance</a>
+          <form action="{% url 'equipament_delete' equipament.pk %}" method="post" style="display:inline;">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<script>
+  // JavaScript to refresh the equipment data every 60 seconds
+  setInterval(function () {
+    fetch("{% url 'equipament_list' %}")  // Ensure this is the correct URL name
+      .then(response => response.text())
+      .then(html => {
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, 'text/html');
+        const newTableBody = doc.querySelector('#equipament-data').innerHTML;
+        document.querySelector('#equipament-data').innerHTML = newTableBody;
+      });
+  }, 30000); // Refresh every 60 seconds
+</script>
+{% endblock %}

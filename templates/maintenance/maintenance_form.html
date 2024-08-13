@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block title %}{{ maintenance.pk|default:"Create" }} Maintenance{% endblock %}
+
+{% block content %}
+<div class="container">
+  <h1>{{ maintenance.pk|default:"Create" }} Maintenance</h1>
+  <form method="post">
+    {% csrf_token %}
+    {{ form|crispy }}
+    <button type="submit" class="btn btn-primary">{{ maintenance.pk|default:"Create" }} Maintenance</button>
+    <a href="{% url 'maintenance_list' equipament.pk %}" class="btn btn-secondary">Cancel</a>
+  </form>
+</div>
+{% endblock %}

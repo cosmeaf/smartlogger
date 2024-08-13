@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block title %}Delete Device{% endblock %}
+
+{% block content %}
+<h1>Delete Device</h1>
+<p>Are you sure you want to delete the device <strong>{{ device.device_id }}</strong>?</p>
+
+<form method="post">
+  {% csrf_token %}
+  <button type="submit" class="btn btn-danger"><i class="fas fa-trash"></i> Delete</button>
+  <a href="{% url 'device_list' %}" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Back to List</a>
+</form>
+{% endblock %}

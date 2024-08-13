@@ -1,0 +1,172 @@
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block title %}Maintenance Records for {{ equipament.device.device_id }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+  <h3>Maintenance {{ equipament.device.device_id }}</h3>
+
+  <table class="table table-sm table-striped text-center">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Usage Hours</th>
+        <th>Alarm Hours</th>
+        <th>Remaining Hours</th>
+        <th>OS</th>
+        <th>Reset</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody id="maintenance-data">
+      {% for maintenance in maintenances %}
+      <tr class="{{ maintenance.background_color }}">
+        <td>{{ maintenance.name }}</td>
+
+        <!-- Usage Hours -->
+        <td>
+          <input type="number" name="usage_hours" class="form-control form-control-sm d-inline-block w-75" x-data
+            @blur="updateUsageHours($event.target.value, {{ maintenance.pk }}, $el.dataset.csrf)"
+            value="{{ maintenance.usage_hours|floatformat:2 }}" data-tokens='{ "csrf": "{{ csrf_token }}" }'>
+        </td>
+
+        <!-- Alarm Hours -->
+        <td>
+          <input type="number" name="alarm_hours" class="form-control form-control-sm d-inline-block w-75" x-data
+            @blur="updateAlarmHours($event.target.value, {{ maintenance.pk }}, $el.dataset.csrf)"
+            value="{{ maintenance.alarm_hours|floatformat:2 }}" data-tokens='{ "csrf": "{{ csrf_token }}" }'>
+        </td>
+
+        <!-- Remaining Hours (Read-Only) -->
+        <td>{{ maintenance.remaining_hours|floatformat:2 }}</td>
+
+        <!-- OS Checkbox -->
+        <td>
+          <input type="checkbox" name="os_{{ maintenance.pk }}" class="form-check-input" x-data
+            @change="updateOS($event.target.checked, {{ maintenance.pk }}, $el.dataset.csrf)" {% if maintenance.os %}
+            checked{% endif %} data-tokens='{ "csrf": "{{ csrf_token }}" }'>
+        </td>
+
+        <!-- Reset Button -->
+        <td>
+          <form method="post" action="{% url 'maintenance_reset' maintenance.pk %}" class="d-inline">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-sm btn-warning">Reset</button>
+          </form>
+        </td>
+
+        <!-- Delete Button -->
+        <td>
+          <form action="{% url 'maintenance_delete' maintenance.pk %}" method="post" style="display:inline;">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <button type="button" class="btn btn-primary mt-3" data-bs-toggle="modal" data-bs-target="#maintenanceModal">
+    Add New Piece
+  </button>
+
+  <a href="{% url 'equipament_list' %}" class="btn btn-secondary mt-3">Back to Equipment List</a>
+</div>
+
+<!-- Include the modal for adding a new maintenance piece -->
+{% include 'modals/maintenance_create_modal.html' %}
+
+{% block extra_js %}
+<script>
+  function updateUsageHours(value, maintenanceId, csrfToken) {
+    fetch(`/api/maintenance/${maintenanceId}/update_usage_hours/`, {
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': csrfToken
+      },
+      body: JSON.stringify({
+        usage_hours: value
+      })
+    })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then(data => {
+        if (data.status === 'success') {
+          alert('Usage hours updated successfully');
+        } else {
+          alert('Failed to update usage hours: ' + data.message);
+        }
+      })
+      .catch(error => {
+        alert('An error occurred: ' + error);
+      });
+  }
+
+  function updateAlarmHours(value, maintenanceId, csrfToken) {
+    fetch(`/api/maintenance/${maintenanceId}/update_alarm_hours/`, {
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': csrfToken
+      },
+      body: JSON.stringify({
+        alarm_hours: value
+      })
+    })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then(data => {
+        if (data.status === 'success') {
+          alert('Alarm hours updated successfully');
+        } else {
+          alert('Failed to update alarm hours: ' + data.message);
+        }
+      })
+      .catch(error => {
+        alert('An error occurred: ' + error);
+      });
+  }
+
+  function updateOS(isChecked, maintenanceId, csrfToken) {
+    fetch(`/api/maintenance/${maintenanceId}/update_os/`, {
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': csrfToken
+      },
+      body: JSON.stringify({
+        os: isChecked
+      })
+    })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then(data => {
+        if (data.status === 'success') {
+          alert('OS status updated successfully');
+        } else {
+          alert('Failed to update OS status: ' + data.message);
+        }
+      })
+      .catch(error => {
+        alert('An error occurred: ' + error);
+      });
+  }
+</script>
+{% endblock %}
+{% endblock %}

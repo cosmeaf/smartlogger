@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block title %}Add Device{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+  <h1>Add Device</h1>
+  <form method="post">
+    {% csrf_token %}
+    {{ form|crispy }} <!-- This renders the form using Bootstrap 5 styles -->
+    <button type="submit" class="btn btn-primary"><i class="fas fa-plus"></i> Add Device</button>
+    <a href="{% url 'device_list' %}" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Back to List</a>
+  </form>
+</div>
+{% endblock %}
